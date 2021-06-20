@@ -11,16 +11,13 @@ public class MainCharacterBasicMovement : MonoBehaviour
     //Fields
     public float playerSpeed;
     public bool canMove;
-    public bool isMoving;
-    public bool mainCharacterBasicMovementScriptOnOffBoolean;
+    private bool isMoving;
     private float playerHorizontalInputValue;
     private int lastFacingDirection = 1;
     private int currentFacingDirection = 1;
 
     public PlayerAnimationController playerAnimationControllerReference;
     public PlayerAttack playerAttackScriptReference;
-    public PlayerStateController playerStateControllerReference;
-    public ObstructionDetectionColliderScriptForPlayer obstructionDetectionColliderScriptReference;
     Rigidbody2D maincharacterRigidbody;
    
 
@@ -29,7 +26,7 @@ public class MainCharacterBasicMovement : MonoBehaviour
 
     bool doFlipPlayerFacingDirectionAccordingToDirectionOfInputFunctionInFixedUpdate;
     bool doMovePlayerHorizontallyFunctionInFixedUpdate;
-    
+
 
 
 
@@ -38,7 +35,6 @@ public class MainCharacterBasicMovement : MonoBehaviour
     void Start()
     {
         //Default Values
-
         
         canMove = true;
         isMoving = false;
@@ -52,46 +48,28 @@ public class MainCharacterBasicMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (mainCharacterBasicMovementScriptOnOffBoolean == true)
+        ObtainMovementInputFromPlayer();
+        if (canMove == true)
         {
-            ObtainMovementInputFromPlayer();
-            if (canMove == true)
-            {
-                doFlipPlayerFacingDirectionAccordingToDirectionOfInputFunctionInFixedUpdate = true;
-                              
-                doMovePlayerHorizontallyFunctionInFixedUpdate = true;
-                                              
-                CheckIfPlayerIsMovingAndCallTheAppropriateMovementAnimation();
-            }
-
-            playerStateControllerReference.StateExecutionHasCompletedAndTurnOnDefaultState(playerStateControllerReference.PLAYER_STATE_IDLE_OR_MOVING);
+            doFlipPlayerFacingDirectionAccordingToDirectionOfInputFunctionInFixedUpdate = true;
+            doMovePlayerHorizontallyFunctionInFixedUpdate = true;
+            CheckIfPlayerIsMovingAndCallTheAppropriateMovementAnimation();
         }
         
     }
 
     private void FixedUpdate()
     {
-        if (mainCharacterBasicMovementScriptOnOffBoolean == true)
+        if (doFlipPlayerFacingDirectionAccordingToDirectionOfInputFunctionInFixedUpdate == true)
         {
-            if (doFlipPlayerFacingDirectionAccordingToDirectionOfInputFunctionInFixedUpdate == true)
-            {
-                FlipPlayerFacingDirectionAccordingToDirectionOfInput();
-                doFlipPlayerFacingDirectionAccordingToDirectionOfInputFunctionInFixedUpdate = false;
-            }
+            FlipPlayerFacingDirectionAccordingToDirectionOfInput();
+            doFlipPlayerFacingDirectionAccordingToDirectionOfInputFunctionInFixedUpdate = false;
+        }
 
-            if (doMovePlayerHorizontallyFunctionInFixedUpdate == true)
-            {
-                if (obstructionDetectionColliderScriptReference.ObstructionInFront == false)
-                {
-                    MovePlayerHorizontally();
-                }
-                else
-                {
-                    maincharacterRigidbody.velocity = new Vector3(0f, maincharacterRigidbody.velocity.y, 0f);
-                }
-
-                doMovePlayerHorizontallyFunctionInFixedUpdate = false;
-            }
+        if (doMovePlayerHorizontallyFunctionInFixedUpdate == true)
+        {
+            MovePlayerHorizontally();
+            doMovePlayerHorizontallyFunctionInFixedUpdate = false;
         }
     }
 
@@ -191,7 +169,5 @@ public class MainCharacterBasicMovement : MonoBehaviour
     {
         maincharacterRigidbody.velocity = new Vector3(0f, maincharacterRigidbody.velocity.y, 0f);
     }
-
-    
 
 }
